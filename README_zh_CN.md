@@ -11,6 +11,10 @@ SiYuan Plugin React REPL
 
 帮助你在 [思源笔记](https://github.com/siyuan-note/siyuan) 中嵌入 [React Live](https://github.com/FormidableLabs/react-live)
 
+## 怎样使用
+
+直接在思源笔记 -> 集市 -> 挂件中找到 React REPL 安装即可
+
 ## 演示
 
 ![react-repl](https://user-images.githubusercontent.com/41723543/233892433-ee8d55c1-9694-4e7a-bc78-13203fffde12.gif)
