@@ -6,6 +6,8 @@
 SiYuan Plugin React REPL
 </p>
 
+[中文](./README_zh_CN.md)
+
 ## Introduction
 
 Help you embed [React Live](https://github.com/FormidableLabs/react-live) in your [SiYuan](https://github.com/siyuan-note/siyuan) note apps
