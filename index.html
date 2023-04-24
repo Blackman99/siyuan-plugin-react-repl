@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>React REPL</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react",
+        "react-dom/client": "https://esm.sh/react-dom/client",
+        "react-live": "https://esm.sh/react-live"
+      }
+    }
+  </script>
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      color-scheme: dark;
+    }
+
+    #app {
+      display: flex;
+      align-items: stretch;
+      height: 100vh;
+    }
+
+    #app>div {
+      width: 50%;
+    }
+
+    #app .prism-code {
+      box-sizing: border-box;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .loading-tip {
+      color: #349ECA;
+      font-size: 18px;
+      padding: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="loading-tip">
+      Loading
+    </div>
+  </div>
+
+  <script type="module">
+    import { createElement, useContext } from 'react'
+    import { LiveProvider, LiveEditor, LiveError, LivePreview, LiveContext } from "react-live";
+    import { createRoot } from 'react-dom/client'
+    import theme from './theme.js'
+    import defaultCode from './defaultCode.js'
+
+    const ATTR_KEY = 'custom-react-repl'
+
+    const debounce = (fn, timeout = 1000) => {
+      let timer
+      return (...params) => {
+        if (timer) {
+          clearTimeout(timer)
+          timer = null
+        }
+        timer = setTimeout(() => {
+          fn(...params)
+          timer = null
+        }, timeout)
+      }
+    }
+
+    const getBlockEl = () => frameElement?.parentElement?.parentElement
+
+    const syncCode = debounce((code) => {
+      const blockEl = getBlockEl()
+      if (!blockEl) return
+      fetch('/api/attr/setBlockAttrs', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: blockEl.dataset.nodeId,
+          attrs: {
+            [ATTR_KEY]: code
+          }
+        })
+      })
+    })
+
+    const root = createRoot(document.getElementById('app'))
+
+    const reactLive = createElement(
+      LiveProvider,
+      { code: getBlockEl()?.getAttribute(ATTR_KEY) || defaultCode, theme },
+      createElement(() => {
+        const { code, onChange } = useContext(LiveContext)
+        return createElement(LiveEditor, {
+          onChange: (code) => {
+            syncCode(code)
+            onChange(code)
+          }
+        })
+      }),
+      createElement(LivePreview),
+      createElement(LiveError),
+    )
+
+    root.render(reactLive)
+
+    const resetHeight = () => {
+      const appEl = document.getElementById('app')
+      if (appEl) {
+        appEl.style.height = window.innerHeight + 'px'
+      }
+    }
+
+    window.addEventListener('resize', resetHeight)
+    resetHeight()
+
+    frameElement.style.width = frameElement.parentElement.style.width = frameElement.parentElement.parentElement.offsetWidth + 'px'
+  </script>
+</body>
+
+</html>
