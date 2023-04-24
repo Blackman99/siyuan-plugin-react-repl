@@ -1,4 +1,11 @@
-# SiYuan Plugin React REPL
+<p align="center">
+<img src="./logo.svg" width="200px" />
+</p>
+
+<p align="center">
+SiYuan Plugin React REPL
+</p>
+
 
 ## 介绍
 
