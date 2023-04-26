@@ -126,7 +126,7 @@
     window.addEventListener('resize', resetHeight)
     resetHeight()
 
-    frameElement.style.width = frameElement.parentElement.style.width = frameElement.parentElement.parentElement.offsetWidth + 'px'
+    frameElement.style.width = getBlockEl().offsetWidth + 'px'
   </script>
 </body>
 
